@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jcell - Assistência Técnica em Celulares | Termo de Garantia</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- jsPDF & html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Signature Pad -->
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #pdfDocument, #pdfDocument * { visibility: visible; }
+      #pdfDocument { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+    .sig-canvas {
+      touch-action: none;
+      width: 100%;
+      height: 112px;
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-zinc-100 font-sans text-zinc-900 antialiased">
+  <div class="min-h-screen flex flex-col lg:flex-row">
+    
+    <!-- BARRA LATERAL / FORMULÁRIO (NÃO IMPRESSO) -->
+    <aside class="w-full lg:w-[420px] bg-white p-6 shadow-xl lg:h-screen lg:overflow-y-auto shrink-0 border-r border-zinc-200">
+      <div class="flex items-center gap-2 mb-1">
+        <i data-lucide="wrench" class="w-5 h-5 text-zinc-800"></i>
+        <h1 class="text-xl font-bold tracking-tight">Jcell</h1>
+      </div>
+      <p class="text-xs text-zinc-500 mb-6 font-medium">Assistência Técnica em Celulares • Potim / Roseira</p>
+
+      <form id="formGarantia" class="space-y-4" onsubmit="event.preventDefault()">
+        <div>
+          <label class="block text-xs font-semibold mb-1 flex items-center gap-1 text-zinc-700">
+            <i data-lucide="hash" class="w-3.5 h-3.5"></i> OS (Ordem de Serviço)
+          </label>
+          <input type="text" id="inputOs" class="w-full border border-zinc-300 rounded p-2 text-sm focus:ring-1 focus:ring-black outline-none" placeholder="Ex: 1023">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold mb-1 flex items-center gap-1 text-zinc-700">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i> Nome do Cliente
+          </label>
+          <input type="text" id="inputCliente" class="w-full border border-zinc-300 rounded p-2 text-sm focus:ring-1 focus:ring-black outline-none" placeholder="Nome completo">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold mb-1 flex items-center gap-1 text-zinc-700">
+            <i data-lucide="smartphone" class="w-3.5 h-3.5"></i> Aparelho / Modelo
+          </label>
+          <input type="text" id="inputAparelho" class="w-full border border-zinc-300 rounded p-2 text-sm focus:ring-1 focus:ring-black outline-none" placeholder="Ex: iPhone 13 Pro / Galaxy S22">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-zinc-700">IMEI / Número de Série</label>
+          <input type="text" id="inputImei" class="w-full border border-zinc-300 rounded p-2 text-sm focus:ring-1 focus:ring-black outline-none" placeholder="Ex: 356789123456789">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold mb-1 flex items-center gap-1 text-zinc-700">
+              <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Data do Serviço
+            </label>
+            <input type="date" id="inputDataServico" class="w-full border border-zinc-300 rounded p-2 text-sm focus:ring-1 focus:ring-black outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1 flex items-center gap-1 text-zinc-700">
+              <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Data Emissão
+            </label>
+            <input type="date" id="inputDataEmissao" class="w-full border border-zinc-300 rounded p-2 text-sm focus:ring-1 focus:ring-black outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold mb-1 text-zinc-700">Serviço Realizado</label>
+          <select id="inputServico" class="w-full border border-zinc-300 rounded p-2 text-sm bg-white focus:ring-1 focus:ring-black outline-none">
+            <option value="Troca de tela/display (Padrão)">Troca de tela/display (Padrão)</option>
+            <option value="Troca de bateria">Troca de bateria</option>
+            <option value="Troca de conector de carga">Troca de conector de carga</option>
+            <option value="Banho químico">Banho químico</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold mb-1 flex items-center gap-1 text-zinc-700">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Cidade
+          </label>
+          <select id="inputCidade" class="w-full border border-zinc-300 rounded p-2 text-sm bg-white focus:ring-1 focus:ring-black outline-none">
+            <option value="Potim">Potim</option>
+            <option value="Roseira">Roseira</option>
+          </select>
+        </div>
+
+        <hr class="my-4 border-zinc-200" />
+
+        <!-- FOTOS E EVIDÊNCIAS -->
+        <div>
+          <h3 class="font-bold text-sm text-zinc-800 mb-2">Fotos / Evidências</h3>
+          <div id="fotosContainer" class="space-y-2">
+            <!-- Slots de fotos adicionados via JS -->
+          </div>
+          <button type="button" id="btnAdicionarFoto" class="mt-2 w-full flex justify-center items-center gap-2 border border-zinc-300 rounded p-2 text-sm hover:bg-zinc-50 font-medium text-zinc-700 transition">
+            <i data-lucide="plus" class="w-4 h-4"></i> Adicionar mais fotos
+          </button>
+        </div>
+
+        <hr class="my-4 border-zinc-200" />
+
+        <!-- ASSINATURAS TOUCH -->
+        <div>
+          <h3 class="font-bold text-sm text-zinc-800 mb-2">Assinaturas</h3>
+          <div>
+            <p class="text-xs font-semibold text-zinc-700 mb-1">Assinatura do Cliente</p>
+            <div class="border rounded bg-white overflow-hidden shadow-inner">
+              <canvas id="canvasCliente" class="sig-canvas"></canvas>
+            </div>
+            <button type="button" id="btnClearCliente" class="text-xs flex items-center gap-1 mt-1 text-red-600 hover:text-red-800">
+              <i data-lucide="trash-2" class="w-3 h-3"></i> Limpar Assinatura
+            </button>
+          </div>
+
+          <div class="mt-4">
+            <p class="text-xs font-semibold text-zinc-700 mb-1">Jcell (Técnico / Loja)</p>
+            <div class="border rounded bg-white overflow-hidden shadow-inner">
+              <canvas id="canvasLoja" class="sig-canvas"></canvas>
+            </div>
+            <button type="button" id="btnClearLoja" class="text-xs flex items-center gap-1 mt-1 text-red-600 hover:text-red-800">
+              <i data-lucide="trash-2" class="w-3 h-3"></i> Limpar Assinatura
+            </button>
+          </div>
+        </div>
+
+        <!-- BOTÃO GERAR PDF -->
+        <button type="button" id="btnGerarPDF" class="w-full bg-black text-white rounded-lg p-3 font-bold flex justify-center items-center gap-2 mt-6 hover:bg-zinc-800 active:scale-[0.99] transition shadow-md">
+          <i data-lucide="file-down" class="w-5 h-5"></i> Gerar e Salvar PDF
+        </button>
+      </form>
+    </aside>
+
+    <!-- PREVIEW / FOLHA DO TERMO (VAI NO PDF) -->
+    <main class="flex-1 p-4 lg:p-8 bg-zinc-200 overflow-auto flex justify-center items-start">
+      <div id="pdfDocument" class="bg-white w-full max-w-[794px] min-h-[1123px] p-10 text-[11px] leading-[1.5] text-black shadow-lg">
+        
+        <!-- CABEÇALHO DA EMPRESA -->
+        <div class="text-center border-b-2 border-zinc-900 pb-3 mb-5">
+          <h1 class="text-2xl font-black tracking-wider text-black">JCELL</h1>
+          <p class="text-[12px] font-bold text-zinc-800 uppercase tracking-widest">
+            Assistência Técnica em Celulares
+          </p>
+          <p class="text-[10px] text-zinc-500 font-medium mt-0.5">Potim / Roseira - SP</p>
+          <div class="mt-3 bg-zinc-100 py-1.5 px-3 border border-zinc-300">
+            <h2 id="previewTitulo" class="text-center font-bold text-[13px] uppercase tracking-wide text-zinc-900">
+              TERMO DE GARANTIA – TROCA DE TELA/DISPLAY (PADRÃO)
+            </h2>
+          </div>
+        </div>
+
+        <!-- TABELA DE DADOS -->
+        <div class="grid grid-cols-2 gap-x-6 gap-y-1 mb-6 border border-zinc-300 p-3 text-[12px] bg-zinc-50/50">
+          <p><b>Ordem de Serviço (OS):</b> <span id="prevOs">—</span></p>
+          <p><b>Data do serviço:</b> <span id="prevDataServico">—</span></p>
+          <p class="col-span-2"><b>Cliente:</b> <span id="prevCliente">—</span></p>
+          <p><b>Aparelho:</b> <span id="prevAparelho">—</span></p>
+          <p><b>IMEI:</b> <span id="prevImei">—</span></p>
+          <p class="col-span-2"><b>Serviço realizado:</b> <span id="prevServico">Troca de tela/display (Padrão)</span></p>
+        </div>
+
+        <!-- CONDIÇÕES JURÍDICAS -->
+        <h2 class="font-bold text-[12px] mb-2 uppercase border-b pb-1">CONDIÇÕES DA GARANTIA</h2>
+        <div class="space-y-2 text-justify">
+          <p><b>1.</b> O serviço realizado possui garantia legal de <b>90 (noventa) dias</b>, conforme previsto no Artigo 26, inciso II, do Código de Defesa do Consumidor (CDC), cobrindo exclusivamente eventuais vícios relacionados à peça fornecida e/ou à execução do serviço.</p>
+          <p><b>2.</b> A presente garantia <b>NÃO COBRE</b> danos decorrentes de:<br/>
+          • Quedas, impactos ou choques físicos;<br/>
+          • Pressão excessiva sobre a tela ou chassi;<br/>
+          • Trincas, quebras, riscos ou manchas (vazamento de display/listras) causados após a entrega do aparelho;<br/>
+          • Contato com água, umidade, vapor ou outros líquidos (mesmo em aparelhos ditos à prova d'água);<br/>
+          • Mau uso, negligência ou utilização inadequada do aparelho pelo usuário e/ou carregadores de má qualidade;<br/>
+          • Danos decorrentes de tentativa de reparo, modificação de software ou abertura do aparelho por terceiros não autorizados;<br/>
+          • Rompimento ou violação do selo de garantia interno da loja (se aplicável).</p>
+          <p><b>3.</b> Em caso de acionamento da garantia, o aparelho deverá ser apresentado na loja para avaliação técnica (com prazo legal de até 30 dias para laudo e resolução), a fim de verificar a origem do problema. A <b>Jcell</b> não se responsabiliza por eventuais perdas de dados, sendo o backup de inteira responsabilidade do cliente antes de deixar o equipamento.</p>
+          <p><b>4.</b> Constatado que o problema decorre de vício da peça ou falha na nossa execução, o reparo será refeito sem custo adicional ao consumidor.</p>
+          <p><b>5.</b> Caso o laudo técnico constate que o dano decorreu de agentes externos, mau uso ou qualquer item listado na cláusula 2, a garantia será automaticamente cancelada.</p>
+          <p class="pt-4">Declaro que li, compreendi e concordo com os termos acima, e atesto que recebi meu aparelho nas condições demonstradas nas fotos em anexo e com o serviço testado e aprovado.</p>
+          <p class="pt-4 font-bold" id="prevLocalData">Potim, -- de --------- de ----</p>
+        </div>
+
+        <!-- ASSINATURAS NA FOLHA -->
+        <div class="mt-14 grid grid-cols-2 gap-10">
+          <div class="text-center">
+            <div class="h-16 flex items-end justify-center">
+              <img id="imgSigCliente" class="hidden h-16 max-w-full object-contain" alt="Assinatura Cliente">
+            </div>
+            <div class="border-t border-black mt-1 pt-1">
+              <b id="prevAssinaturaCliente">Nome do Cliente</b><br/>
+              <span class="text-[10px] text-zinc-600">Cliente</span>
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="h-16 flex items-end justify-center">
+              <img id="imgSigLoja" class="hidden h-16 max-w-full object-contain" alt="Assinatura Jcell">
+            </div>
+            <div class="border-t border-black mt-1 pt-1">
+              <b>Jcell – Assistência Técnica</b><br/>
+              <span class="text-[10px] text-zinc-600">Assinatura do Técnico Responsável</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANEXO FOTOGRÁFICO -->
+        <div id="prevSecaoFotos" class="mt-12 hidden">
+          <h2 class="font-bold text-[12px] mb-3 border-t pt-4 uppercase">ANEXO: REGISTROS FOTOGRÁFICOS DO APARELHO</h2>
+          <div id="prevGradeFotos" class="grid grid-cols-2 gap-3"></div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    // Inicialização de Ícones
+    lucide.createIcons();
+
+    // Data de hoje em ISO YYYY-MM-DD
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('inputDataServico').value = hoje;
+    document.getElementById('inputDataEmissao').value = hoje;
+
+    // Estado das fotos
+    let fotosData = [];
+
+    // Formatação de data
+    function formatarDataBR(isoStr) {
+      if (!isoStr) return '';
+      const [ano, mes, dia] = isoStr.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    function formatarDataExtenso(isoStr, cidade) {
+      if (!isoStr) return '';
+      const d = new Date(isoStr + 'T12:00:00');
+      const dataFormatada = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+      return `${cidade}, ${dataFormatada}`;
+    }
+
+    // Canvas de Assinatura
+    const canvasCli = document.getElementById('canvasCliente');
+    const canvasLoj = document.getElementById('canvasLoja');
+
+    function ajustarCanvas(canvas) {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * ratio;
+      canvas.height = rect.height * ratio;
+      const ctx = canvas.getContext("2d");
+      ctx.scale(ratio, ratio);
+    }
+
+    // Inicializa SignaturePad após layout estar pronto
+    window.addEventListener('load', () => {
+      ajustarCanvas(canvasCli);
+      ajustarCanvas(canvasLoj);
+    });
+
+    const sigPadCliente = new SignaturePad(canvasCli, { penColor: 'rgb(0, 0, 0)' });
+    const sigPadLoja = new SignaturePad(canvasLoj, { penColor: 'rgb(0, 0, 0)' });
+
+    function atualizarAssinaturaPreview(pad, imgElement) {
+      if (!pad.isEmpty()) {
+        imgElement.src = pad.toDataURL('image/png');
+        imgElement.classList.remove('hidden');
+      } else {
+        imgElement.src = '';
+        imgElement.classList.add('hidden');
+      }
+    }
+
+    sigPadCliente.addEventListener('endStroke', () => {
+      atualizarAssinaturaPreview(sigPadCliente, document.getElementById('imgSigCliente'));
+    });
+
+    sigPadLoja.addEventListener('endStroke', () => {
+      atualizarAssinaturaPreview(sigPadLoja, document.getElementById('imgSigLoja'));
+    });
+
+    document.getElementById('btnClearCliente').addEventListener('click', () => {
+      sigPadCliente.clear();
+      atualizarAssinaturaPreview(sigPadCliente, document.getElementById('imgSigCliente'));
+    });
+
+    document.getElementById('btnClearLoja').addEventListener('click', () => {
+      sigPadLoja.clear();
+      atualizarAssinaturaPreview(sigPadLoja, document.getElementById('imgSigLoja'));
+    });
+
+    // Atualização do Preview em Tempo Real
+    function atualizarPreview() {
+      const os = document.getElementById('inputOs').value.trim();
+      const cliente = document.getElementById('inputCliente').value.trim();
+      const aparelho = document.getElementById('inputAparelho').value.trim();
+      const imei = document.getElementById('inputImei').value.trim();
+      const dataServico = document.getElementById('inputDataServico').value;
+      const dataEmissao = document.getElementById('inputDataEmissao').value;
+      const servico = document.getElementById('inputServico').value;
+      const cidade = document.getElementById('inputCidade').value;
+
+      document.getElementById('previewTitulo').textContent = `TERMO DE GARANTIA – ${servico.toUpperCase()}`;
+      document.getElementById('prevOs').textContent = os || '—';
+      document.getElementById('prevCliente').textContent = cliente || '—';
+      document.getElementById('prevAparelho').textContent = aparelho || '—';
+      document.getElementById('prevImei').textContent = imei || '—';
+      document.getElementById('prevServico').textContent = servico;
+      document.getElementById('prevDataServico').textContent = formatarDataBR(dataServico) || '—';
+      document.getElementById('prevLocalData').textContent = formatarDataExtenso(dataEmissao, cidade);
+      document.getElementById('prevAssinaturaCliente').textContent = cliente || 'Nome do Cliente';
+    }
+
+    // Escuta eventos dos inputs
+    ['inputOs', 'inputCliente', 'inputAparelho', 'inputImei', 'inputDataServico', 'inputDataEmissao', 'inputServico', 'inputCidade'].forEach(id => {
+      document.getElementById(id).addEventListener('input', atualizarPreview);
+      document.getElementById(id).addEventListener('change', atualizarPreview);
+    });
+
+    // Gerenciamento de Fotos
+    function renderizarFormFotos() {
+      const container = document.getElementById('fotosContainer');
+      container.innerHTML = '';
+
+      fotosData.forEach((foto, index) => {
+        const item = document.createElement('div');
+        item.className = 'border border-dashed border-zinc-300 rounded p-2 bg-zinc-50';
+        item.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <input type="file" accept="image/*" class="text-xs w-full file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-zinc-200 file:text-zinc-700 cursor-pointer" onchange="carregarFoto(${index}, this)">
+            <button type="button" onclick="removerFoto(${index})" class="text-zinc-400 hover:text-red-500 p-1" title="Remover">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+          ${foto ? `<img src="${foto}" class="mt-2 rounded w-full h-32 object-cover border">` : ''}
+        `;
+        container.appendChild(item);
+      });
+
+      lucide.createIcons();
+      renderizarPreviewFotos();
+    }
+
+    window.carregarFoto = function(index, input) {
+      if (!input.files || !input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        fotosData[index] = e.target.result;
+        renderizarFormFotos();
+      };
+      reader.readAsDataURL(input.files[0]);
+    };
+
+    window.removerFoto = function(index) {
+      fotosData.splice(index, 1);
+      if (fotosData.length === 0) fotosData = [null];
+      renderizarFormFotos();
+    };
+
+    document.getElementById('btnAdicionarFoto').addEventListener('click', () => {
+      fotosData.push(null);
+      renderizarFormFotos();
+    });
+
+    function renderizarPreviewFotos() {
+      const secao = document.getElementById('prevSecaoFotos');
+      const grade = document.getElementById('prevGradeFotos');
+      const fotosValidas = fotosData.filter(Boolean);
+
+      if (fotosValidas.length === 0) {
+        secao.classList.add('hidden');
+        grade.innerHTML = '';
+        return;
+      }
+
+      secao.classList.remove('hidden');
+      grade.innerHTML = '';
+      fotosValidas.forEach((f, i) => {
+        const div = document.createElement('div');
+        div.className = 'border rounded p-1 bg-zinc-50';
+        div.innerHTML = `
+          <img src="${f}" class="w-full h-44 border rounded object-cover">
+          <p class="text-[10px] text-center text-zinc-500 mt-1">Foto ${i + 1} - Estado no momento da entrega</p>
+        `;
+        grade.appendChild(div);
+      });
+    }
+
+    // Inicializa com 2 slots de fotos padrão
+    fotosData = [null, null];
+    renderizarFormFotos();
+    atualizarPreview();
+
+    // GERAR PDF
+    document.getElementById('btnGerarPDF').addEventListener('click', async () => {
+      const cliente = document.getElementById('inputCliente').value.trim();
+      const aparelho = document.getElementById('inputAparelho').value.trim();
+      const os = document.getElementById('inputOs').value.trim() || 'S-N';
+
+      if (!cliente || !aparelho) {
+        alert('Por favor, preencha o Nome do Cliente e o Aparelho antes de gerar o PDF.');
+        return;
+      }
+
+      // Garante captura das assinaturas
+      atualizarAssinaturaPreview(sigPadCliente, document.getElementById('imgSigCliente'));
+      atualizarAssinaturaPreview(sigPadLoja, document.getElementById('imgSigLoja'));
+
+      const element = document.getElementById('pdfDocument');
+      
+      const btn = document.getElementById('btnGerarPDF');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span class="animate-spin mr-2">⌛</span> Gerando PDF...`;
+      btn.disabled = true;
+
+      try {
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff'
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        let y = 0;
+        let remainingHeight = pdfHeight;
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        pdf.addImage(imgData, 'PNG', 0, y, pdfWidth, pdfHeight);
+        remainingHeight -= pageHeight;
+
+        while (remainingHeight > 0) {
+          y -= pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, y, pdfWidth, pdfHeight);
+          remainingHeight -= pageHeight;
+        }
+
+        const nomeArquivo = `Garantia_Jcell_OS-${os}_${cliente.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+        pdf.save(nomeArquivo);
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao gerar o PDF. Verifique o console.');
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
