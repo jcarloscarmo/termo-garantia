@@ -148,80 +148,93 @@
     </aside>
 
     <!-- PREVIEW / FOLHA DO TERMO (VAI NO PDF) -->
-    <main class="flex-1 p-4 lg:p-8 bg-zinc-200 overflow-auto flex justify-center items-start">
-      <div id="pdfDocument" class="bg-white w-full max-w-[794px] min-h-[1123px] p-10 text-[11px] leading-[1.5] text-black shadow-lg">
-        
-        <!-- CABEÇALHO DA EMPRESA -->
-        <div class="text-center border-b-2 border-zinc-900 pb-3 mb-5">
-          <h1 class="text-2xl font-black tracking-wider text-black">JCELL</h1>
-          <p class="text-[12px] font-bold text-zinc-800 uppercase tracking-widest">
-            Assistência Técnica em Celulares
-          </p>
-          <p class="text-[10px] text-zinc-500 font-medium mt-0.5">Potim / Roseira - SP</p>
-          <div class="mt-3 bg-zinc-100 py-1.5 px-3 border border-zinc-300">
-            <h2 id="previewTitulo" class="text-center font-bold text-[13px] uppercase tracking-wide text-zinc-900">
-              TERMO DE GARANTIA – TROCA DE TELA/DISPLAY (PADRÃO)
-            </h2>
+    <main class="flex-1 p-2 sm:p-6 lg:p-8 bg-zinc-200 overflow-x-auto flex flex-col items-center gap-6">
+      <!-- Aviso de rolagem para telas menores -->
+      <div class="text-[11px] text-zinc-500 bg-white/80 py-1 px-3 rounded-full lg:hidden shadow-sm flex items-center gap-1.5">
+        <span>💡 Arraste para o lado para ver a folha inteira no celular</span>
+      </div>
+
+      <div id="pdfContainer" class="flex flex-col gap-8 items-center">
+        <!-- PÁGINA 1: TERMO DE GARANTIA PRINCIPAL -->
+        <div class="pdf-page bg-white w-[794px] min-w-[794px] h-[1123px] max-h-[1123px] p-10 flex flex-col justify-between text-black shadow-lg box-border select-none relative overflow-hidden">
+          <div>
+            <!-- CABEÇALHO DA EMPRESA -->
+            <div class="text-center border-b-2 border-zinc-900 pb-3 mb-4">
+              <h1 class="text-2xl font-black tracking-wider text-black">JCELL</h1>
+              <p class="text-[11px] font-bold text-zinc-800 uppercase tracking-widest">
+                Assistência Técnica em Celulares
+              </p>
+              <p class="text-[10px] text-zinc-500 font-medium mt-0.5">Potim / Roseira - SP</p>
+              <div class="mt-2.5 bg-zinc-100 py-1 px-3 border border-zinc-300">
+                <h2 id="previewTitulo" class="text-center font-bold text-[12px] uppercase tracking-wide text-zinc-900">
+                  TERMO DE GARANTIA – TROCA DE TELA/DISPLAY (PADRÃO)
+                </h2>
+              </div>
+            </div>
+
+            <!-- TABELA DE DADOS -->
+            <div class="grid grid-cols-2 gap-x-6 gap-y-1 mb-4 border border-zinc-300 p-2.5 text-[11px] rounded-sm bg-zinc-50/50">
+              <p><b>Ordem de Serviço (OS):</b> <span id="prevOs">—</span></p>
+              <p><b>Data do serviço:</b> <span id="prevDataServico">—</span></p>
+              <p class="col-span-2"><b>Cliente:</b> <span id="prevCliente">—</span></p>
+              <p><b>Aparelho:</b> <span id="prevAparelho">—</span></p>
+              <p><b>IMEI:</b> <span id="prevImei">—</span></p>
+              <p class="col-span-2"><b>Serviço realizado:</b> <span id="prevServico">Troca de tela/display (Padrão)</span></p>
+            </div>
+
+            <!-- CONDIÇÕES JURÍDICAS -->
+            <h2 class="font-bold text-[11px] mb-1.5 uppercase border-b pb-0.5">CONDIÇÕES DA GARANTIA</h2>
+            <div class="space-y-1.5 text-justify text-[10.5px] leading-[1.45]">
+              <p><b>1.</b> O serviço realizado possui garantia legal de <b>90 (noventa) dias</b>, conforme previsto no Artigo 26, inciso II, do Código de Defesa do Consumidor (CDC), cobrindo exclusivamente eventuais vícios relacionados à peça fornecida e/ou à execução do serviço.</p>
+              <p><b>2.</b> A presente garantia <b>NÃO COBRE</b> danos decorrentes de:<br/>
+              • Quedas, impactos ou choques físicos;<br/>
+              • Pressão excessiva sobre a tela ou chassi;<br/>
+              • Trincas, quebras, riscos ou manchas (vazamento de display/listras) causados após a entrega do aparelho;<br/>
+              • Contato com água, umidade, vapor ou outros líquidos (mesmo em aparelhos ditos à prova d'água);<br/>
+              • Mau uso, negligência ou utilização inadequada do aparelho pelo usuário e/ou carregadores de má qualidade;<br/>
+              • Danos decorrentes de tentativa de reparo, modificação de software ou abertura do aparelho por terceiros não autorizados;<br/>
+              • Rompimento ou violação do selo de garantia interno da loja (se aplicável).</p>
+              <p><b>3.</b> Em caso de acionamento da garantia, o aparelho deverá ser apresentado na loja para avaliação técnica (com prazo legal de até 30 dias para laudo e resolução), a fim de verificar a origem do problema. A <b>Jcell</b> não se responsabiliza por eventuais perdas de dados, sendo o backup de inteira responsabilidade do cliente antes de deixar o equipamento.</p>
+              <p><b>4.</b> Constatado que o problema decorre de vício da peça ou falha na nossa execução, o reparo será refeito sem custo adicional ao consumidor.</p>
+              <p><b>5.</b> Caso o laudo técnico constate que o dano decorreu de agentes externos, mau uso ou qualquer item listado na cláusula 2, a garantia será automaticamente cancelada.</p>
+              <p class="pt-2">Declaro que li, compreendi e concordo com os termos acima, e atesto que recebi meu aparelho nas condições demonstradas nas fotos em anexo e com o serviço testado e aprovado.</p>
+              <p class="pt-2 font-bold" id="prevLocalData">Potim, -- de --------- de ----</p>
+            </div>
+          </div>
+
+          <!-- ASSINATURAS NA FOLHA -->
+          <div class="pt-3 border-t border-zinc-200">
+            <div class="grid grid-cols-2 gap-10">
+              <div class="text-center">
+                <div class="h-16 flex items-end justify-center">
+                  <img id="imgSigCliente" class="hidden h-16 max-w-full object-contain" alt="Assinatura Cliente">
+                </div>
+                <div class="border-t border-black mt-1 pt-1">
+                  <b id="prevAssinaturaCliente" class="text-[11px]">Nome do Cliente</b><br/>
+                  <span class="text-[10px] text-zinc-600">Cliente</span>
+                </div>
+              </div>
+              <div class="text-center">
+                <div class="h-16 flex items-end justify-center">
+                  <img id="imgSigLoja" class="hidden h-16 max-w-full object-contain" alt="Assinatura Jcell">
+                </div>
+                <div class="border-t border-black mt-1 pt-1">
+                  <b class="text-[11px]">Jcell – Assistência Técnica</b><br/>
+                  <span class="text-[10px] text-zinc-600">Assinatura do Técnico Responsável</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- RODAPÉ DA PÁGINA 1 -->
+            <div class="mt-4 flex justify-between items-center text-[9px] text-zinc-400">
+              <span>Jcell Assistência Técnica em Celulares • Potim / Roseira</span>
+              <span id="prevPageCounter">Página 1 de 1</span>
+            </div>
           </div>
         </div>
 
-        <!-- TABELA DE DADOS -->
-        <div class="grid grid-cols-2 gap-x-6 gap-y-1 mb-6 border border-zinc-300 p-3 text-[12px] bg-zinc-50/50">
-          <p><b>Ordem de Serviço (OS):</b> <span id="prevOs">—</span></p>
-          <p><b>Data do serviço:</b> <span id="prevDataServico">—</span></p>
-          <p class="col-span-2"><b>Cliente:</b> <span id="prevCliente">—</span></p>
-          <p><b>Aparelho:</b> <span id="prevAparelho">—</span></p>
-          <p><b>IMEI:</b> <span id="prevImei">—</span></p>
-          <p class="col-span-2"><b>Serviço realizado:</b> <span id="prevServico">Troca de tela/display (Padrão)</span></p>
-        </div>
-
-        <!-- CONDIÇÕES JURÍDICAS -->
-        <h2 class="font-bold text-[12px] mb-2 uppercase border-b pb-1">CONDIÇÕES DA GARANTIA</h2>
-        <div class="space-y-2 text-justify">
-          <p><b>1.</b> O serviço realizado possui garantia legal de <b>90 (noventa) dias</b>, conforme previsto no Artigo 26, inciso II, do Código de Defesa do Consumidor (CDC), cobrindo exclusivamente eventuais vícios relacionados à peça fornecida e/ou à execução do serviço.</p>
-          <p><b>2.</b> A presente garantia <b>NÃO COBRE</b> danos decorrentes de:<br/>
-          • Quedas, impactos ou choques físicos;<br/>
-          • Pressão excessiva sobre a tela ou chassi;<br/>
-          • Trincas, quebras, riscos ou manchas (vazamento de display/listras) causados após a entrega do aparelho;<br/>
-          • Contato com água, umidade, vapor ou outros líquidos (mesmo em aparelhos ditos à prova d'água);<br/>
-          • Mau uso, negligência ou utilização inadequada do aparelho pelo usuário e/ou carregadores de má qualidade;<br/>
-          • Danos decorrentes de tentativa de reparo, modificação de software ou abertura do aparelho por terceiros não autorizados;<br/>
-          • Rompimento ou violação do selo de garantia interno da loja (se aplicável).</p>
-          <p><b>3.</b> Em caso de acionamento da garantia, o aparelho deverá ser apresentado na loja para avaliação técnica (com prazo legal de até 30 dias para laudo e resolução), a fim de verificar a origem do problema. A <b>Jcell</b> não se responsabiliza por eventuais perdas de dados, sendo o backup de inteira responsabilidade do cliente antes de deixar o equipamento.</p>
-          <p><b>4.</b> Constatado que o problema decorre de vício da peça ou falha na nossa execução, o reparo será refeito sem custo adicional ao consumidor.</p>
-          <p><b>5.</b> Caso o laudo técnico constate que o dano decorreu de agentes externos, mau uso ou qualquer item listado na cláusula 2, a garantia será automaticamente cancelada.</p>
-          <p class="pt-4">Declaro que li, compreendi e concordo com os termos acima, e atesto que recebi meu aparelho nas condições demonstradas nas fotos em anexo e com o serviço testado e aprovado.</p>
-          <p class="pt-4 font-bold" id="prevLocalData">Potim, -- de --------- de ----</p>
-        </div>
-
-        <!-- ASSINATURAS NA FOLHA -->
-        <div class="mt-14 grid grid-cols-2 gap-10">
-          <div class="text-center">
-            <div class="h-16 flex items-end justify-center">
-              <img id="imgSigCliente" class="hidden h-16 max-w-full object-contain" alt="Assinatura Cliente">
-            </div>
-            <div class="border-t border-black mt-1 pt-1">
-              <b id="prevAssinaturaCliente">Nome do Cliente</b><br/>
-              <span class="text-[10px] text-zinc-600">Cliente</span>
-            </div>
-          </div>
-          <div class="text-center">
-            <div class="h-16 flex items-end justify-center">
-              <img id="imgSigLoja" class="hidden h-16 max-w-full object-contain" alt="Assinatura Jcell">
-            </div>
-            <div class="border-t border-black mt-1 pt-1">
-              <b>Jcell – Assistência Técnica</b><br/>
-              <span class="text-[10px] text-zinc-600">Assinatura do Técnico Responsável</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ANEXO FOTOGRÁFICO -->
-        <div id="prevSecaoFotos" class="mt-12 hidden">
-          <h2 class="font-bold text-[12px] mb-3 border-t pt-4 uppercase">ANEXO: REGISTROS FOTOGRÁFICOS DO APARELHO</h2>
-          <div id="prevGradeFotos" class="grid grid-cols-2 gap-3"></div>
-        </div>
-
+        <!-- CONTAINER DAS PÁGINAS DE FOTOS -->
+        <div id="fotosPagesContainer" class="flex flex-col gap-8 items-center w-full"></div>
       </div>
     </main>
 
@@ -376,27 +389,94 @@
       renderizarFormFotos();
     });
 
-    function renderizarPreviewFotos() {
-      const secao = document.getElementById('prevSecaoFotos');
-      const grade = document.getElementById('prevGradeFotos');
-      const fotosValidas = fotosData.filter(Boolean);
+    function chunkArray(arr, size) {
+      const chunks = [];
+      for (let i = 0; i < arr.length; i += size) {
+        chunks.push(arr.slice(i, i + size));
+      }
+      return chunks;
+    }
 
-      if (fotosValidas.length === 0) {
-        secao.classList.add('hidden');
-        grade.innerHTML = '';
+    function renderizarPreviewFotos() {
+      const container = document.getElementById('fotosPagesContainer');
+      const fotosValidas = fotosData.filter(Boolean);
+      const photoPages = chunkArray(fotosValidas, 4);
+      const totalPaginas = 1 + photoPages.length;
+
+      document.getElementById('prevPageCounter').textContent = `Página 1 de ${totalPaginas}`;
+
+      if (photoPages.length === 0) {
+        container.innerHTML = '';
         return;
       }
 
-      secao.classList.remove('hidden');
-      grade.innerHTML = '';
-      fotosValidas.forEach((f, i) => {
-        const div = document.createElement('div');
-        div.className = 'border rounded p-1 bg-zinc-50';
-        div.innerHTML = `
-          <img src="${f}" class="w-full h-44 border rounded object-cover">
-          <p class="text-[10px] text-center text-zinc-500 mt-1">Foto ${i + 1} - Estado no momento da entrega</p>
+      const os = document.getElementById('inputOs').value.trim() || 'S-N';
+      const cliente = document.getElementById('inputCliente').value.trim() || '—';
+      const aparelho = document.getElementById('inputAparelho').value.trim() || '—';
+      const dataServico = document.getElementById('inputDataServico').value;
+      const dataServicoBR = formatarDataBR(dataServico) || '—';
+
+      container.innerHTML = '';
+
+      photoPages.forEach((pagePhotos, pageIdx) => {
+        const pageDiv = document.createElement('div');
+        pageDiv.className = 'pdf-page bg-white w-[794px] min-w-[794px] h-[1123px] max-h-[1123px] p-10 flex flex-col justify-between text-black shadow-lg box-border select-none relative overflow-hidden';
+
+        const photoCardsHtml = pagePhotos.map((f, i) => {
+          const globalIdx = pageIdx * 4 + i + 1;
+          const photoHeight = pagePhotos.length <= 2 ? 'h-[380px]' : 'h-[270px]';
+          return `
+            <div class="border border-zinc-300 rounded p-2 bg-zinc-50 flex flex-col items-center">
+              <img src="${f}" alt="Evidência ${globalIdx}" class="w-full ${photoHeight} object-contain rounded border border-zinc-200 bg-black/5">
+              <div class="mt-2 text-center">
+                <span class="inline-block text-[11px] font-bold text-zinc-800">Foto ${globalIdx}</span>
+                <p class="text-[10px] text-zinc-500">Registro de vistoria no momento da entrega</p>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        const gridColsClass = pagePhotos.length === 1 ? 'grid-cols-1 max-w-lg mx-auto' : 'grid-cols-2';
+
+        pageDiv.innerHTML = `
+          <div>
+            <!-- CABEÇALHO DO ANEXO -->
+            <div class="border-b-2 border-zinc-900 pb-3 mb-4">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h1 class="text-xl font-black text-black">JCELL</h1>
+                  <p class="text-[10px] font-bold text-zinc-700 uppercase">Assistência Técnica em Celulares</p>
+                </div>
+                <div class="text-right text-[10px] text-zinc-600">
+                  <p><b>OS:</b> ${os}</p>
+                  <p><b>Data:</b> ${dataServicoBR}</p>
+                </div>
+              </div>
+
+              <div class="mt-2.5 bg-zinc-100 py-1.5 px-3 border border-zinc-300 flex justify-between items-center">
+                <h2 class="font-bold text-[11px] uppercase text-zinc-900">
+                  ANEXO: REGISTROS FOTOGRÁFICOS DO APARELHO ${photoPages.length > 1 ? `(Parte ${pageIdx + 1})` : ''}
+                </h2>
+                <span class="text-[10px] text-zinc-600">
+                  <b>Cliente:</b> ${cliente} | <b>Aparelho:</b> ${aparelho}
+                </span>
+              </div>
+            </div>
+
+            <!-- GRADE DAS FOTOS -->
+            <div class="grid ${gridColsClass} gap-4 mt-2">
+              ${photoCardsHtml}
+            </div>
+          </div>
+
+          <!-- RODAPÉ DO ANEXO -->
+          <div class="pt-3 border-t border-zinc-200 flex justify-between items-center text-[9px] text-zinc-400">
+            <span>Jcell Assistência Técnica • Comprovante de Vistoria Fotográfica</span>
+            <span>Página ${2 + pageIdx} de ${totalPaginas}</span>
+          </div>
         `;
-        grade.appendChild(div);
+
+        container.appendChild(pageDiv);
       });
     }
 
@@ -405,7 +485,7 @@
     renderizarFormFotos();
     atualizarPreview();
 
-    // GERAR PDF
+    // GERAR PDF ATÔMICO PÁGINA A PÁGINA (SEM CORTES)
     document.getElementById('btnGerarPDF').addEventListener('click', async () => {
       const cliente = document.getElementById('inputCliente').value.trim();
       const aparelho = document.getElementById('inputAparelho').value.trim();
@@ -420,42 +500,54 @@
       atualizarAssinaturaPreview(sigPadCliente, document.getElementById('imgSigCliente'));
       atualizarAssinaturaPreview(sigPadLoja, document.getElementById('imgSigLoja'));
 
-      const element = document.getElementById('pdfDocument');
-      
       const btn = document.getElementById('btnGerarPDF');
       const originalText = btn.innerHTML;
-      btn.innerHTML = `<span class="animate-spin mr-2">⌛</span> Gerando PDF...`;
+      btn.innerHTML = `<span class="animate-spin mr-2">⌛</span> Gerando PDF sem cortes...`;
       btn.disabled = true;
 
       try {
-        const canvas = await html2canvas(element, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#ffffff'
-        });
+        await new Promise((r) => setTimeout(r, 150));
 
-        const imgData = canvas.toDataURL('image/png');
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-        let y = 0;
-        let remainingHeight = pdfHeight;
-        const pageHeight = pdf.internal.pageSize.getHeight();
-
-        pdf.addImage(imgData, 'PNG', 0, y, pdfWidth, pdfHeight);
-        remainingHeight -= pageHeight;
-
-        while (remainingHeight > 0) {
-          y -= pageHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, y, pdfWidth, pdfHeight);
-          remainingHeight -= pageHeight;
+        const pages = document.querySelectorAll('#pdfContainer .pdf-page');
+        if (!pages || pages.length === 0) {
+          alert('Erro ao localizar as páginas do documento.');
+          return;
         }
 
-        const nomeArquivo = `Garantia_Jcell_OS-${os}_${cliente.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-        pdf.save(nomeArquivo);
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+          orientation: 'p',
+          unit: 'mm',
+          format: 'a4',
+          compress: true,
+        });
+
+        const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
+        const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+
+        for (let i = 0; i < pages.length; i++) {
+          const pageEl = pages[i];
+          if (i > 0) {
+            pdf.addPage('a4', 'p');
+          }
+
+          const canvas = await html2canvas(pageEl, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            logging: false,
+            width: 794,
+            height: 1123,
+            windowWidth: 794,
+          });
+
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+        }
+
+        const safeOs = os.replace(/[^a-zA-Z0-9_-]/g, '');
+        const safeCliente = cliente.replace(/[^a-zA-Z0-9_-]/g, '_');
+        pdf.save(`Garantia_Jcell_OS-${safeOs}_${safeCliente}.pdf`);
       } catch (err) {
         console.error(err);
         alert('Erro ao gerar o PDF. Verifique o console.');
